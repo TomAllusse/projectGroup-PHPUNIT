@@ -1,0 +1,171 @@
+<?php
+
+namespace App\Entities;
+
+use Exception;
+
+class Vaisseaux
+{
+    private $id;
+    private $nom;
+    private $carburant;
+    private $degatSubies;
+    private $etat=true; // True pour opérationnel, False pour non opérationnel
+    
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function setCarburant($carburant)
+    {
+        $this->carburant = $carburant;
+
+        return $this;
+    }
+
+    public function setEtat($etat)
+    {
+        $this->etat = $etat; 
+
+        return $this;
+    }
+
+    public function setDegatSubies($degats)
+    {
+        $this->degatSubies = $degats;
+
+        return $this;
+    }
+
+    /* Methodes Getters */
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    public function getCarburant()
+    {
+        return $this->carburant;
+    }
+
+    public function getIsOperationnel()
+    {
+        return $this->etat;
+    }
+
+    public function getDegatSubies()
+    {
+        return $this->degatSubies;
+    }
+
+    
+    /* Methode */
+
+    public function simulateurAvaries()
+    {
+        if($this->carburant <= 0 || $this->degatSubies >= 100){
+            $this->etat = FALSE;
+            return "Le vaisseau {$this->nom} est devenu non opérationnel.";
+        }
+    }
+
+    public function interaction($action, $param = null)
+    {
+        if ($action === "charger")
+        {
+            return "Le vaisseau est entrain de charger";
+        }
+        else if($action === "tirer" ){
+            return "Le vaisseau Tire {$param} munitions";
+        }
+    }
+
+    private function reparer()
+    {
+        $this->degatSubies = 0;
+        $this->etat = true;
+        return "Le vaisseau {$this->nom} a été réparé!";
+    }
+
+    private function diagnostique()
+    {
+        return "Santé: {$this->degatSubies}% | État: " . ($this->etat ? "Opérationnel" : "Non opérationnel");
+    }
+    
+
+
+
+        /*
+
+
+    public function __construct(string $nom, int $sante = 100, int $capaciteTransport = 1000)
+    {
+        $this->nom = $nom;
+        $this->sante = $sante;
+        $this->capaciteTransport = $capaciteTransport;
+        $this->avaries = [];
+    }
+
+    public function combat($adversaire)
+    {
+        $degats = rand(10, 40);
+        $adversaire->sante -= $degats;
+        return "{$this->nom} attaque {$adversaire->nom} et inflige {$degats} dégâts!";
+    }
+
+    public function transport(int $charge): bool
+    {
+        if ($charge <= $this->capaciteTransport) {
+            $this->capaciteTransport -= $charge;
+            return true;
+        }
+        return false;
+    }
+
+    public function interaction($action)
+    {
+        return match ($action) {
+            'reparer' => $this->reparer(),
+            'diagnostique' => $this->diagnostique(),
+            default => "Action inconnue"
+        };
+    }
+
+    private function reparer()
+    {
+        $this->avaries = [];
+        $this->sante = min($this->sante + 30, 100);
+        return "{$this->nom} a été réparé!";
+    }
+
+    private function diagnostique()
+    {
+        return "Santé: {$this->sante}% | Avaries: " . implode(', ', $this->avaries ?: ['Aucune']);
+    }
+
+    public function getSante()
+    {
+        return $this->sante;
+    }
+
+    public function getNom()
+    {
+        return $this->nom;
+    }*/
+}
