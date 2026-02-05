@@ -5,65 +5,47 @@ use PHPUnit\Framework\TestCase;
 
 class VaisseauxTest extends TestCase
 {
+    /* Vaisseau de base */
 
-
-
-
-
-
-
-        /*
-    protected function setUp(){
-        $this->vaisseau = new Vaisseau();
+    public function testVaisseauOperationnel() {
+        $vaisseau = new Vaisseaux(0, "Millenium", 100, true);
+        $this->assertTrue($vaisseau->estOperationnel());
+        $vaisseau->setEtat(false);
+        $this->assertFalse($vaisseau->estOperationnel());
     }
 
-    public function testCreationVaisseau(){
-        $this->assertInstanceOf(Vaisseau::class, $this->vaisseau);
+    /* Vaisseau transport */
+
+    public function testVaisseauCharge() {
+        $vaisseau = new VaisseauxTransport(0, "Millenium", 0, true, 30);
+        $vaisseau->charger(20);
+        $this->assertEquals(20, $vaisseau->getChargeActuelle());
+        $vaisseau->decharger(20);
+        $this->assertEquals(0, $vaisseau->getChargeActuelle());
     }
 
-    public function testSetNomVaisseau(){
-        $this->vaisseau->setNom('Enterprise');
-        $this->assertEquals('Enterprise', $this->vaisseau->getNom());
+    /* Vaisseau combat */
+
+    public function testConsommationMunitions() {
+        $vaisseau = new VaisseauxCombat(0, "Millenium", 0, true, 100);
+        $vaisseau->tirer(100);
+        $this->assertEquals(0, $vaisseau->getMunitions());
     }
 
-    public function testSetTypeVaisseau(){
-        $this->vaisseau->setType('Destroyer');
-        $this->assertEquals('Destroyer', $this->vaisseau->getType());
+    /* Utilisation de Data Provider */
+
+    public function vaisseauProvider() {
+        return [
+            [100,0],
+            [-10,0],
+            [200,100],
+        ];
     }
 
-    public function testSetCapaciteVaisseau(){
-        $this->vaisseau->setCapacite(100);
-        $this->assertEquals(100, $this->vaisseau->getCapacite());
+    // #[@dataProvider('vaisseauProvider')]
+    public function testVaisseauChargeDataProvider($charge, $expected) {
+        $vaisseau = new VaisseauxTransport(0, "Millenium", 0, true, 30);
+        $vaisseau->charger($charge);
+        $this->assertEquals($expected, $vaisseau->getChargeActuelle());
     }
-
-    public function testCapaciteNegativeException(){
-        $this->expectException(\InvalidArgumentException::class);
-        $this->vaisseau->setCapacite(-10);
-    }
-
-    public function testSetVitesseVaisseau(){
-        $this->vaisseau->setVitesse(25);
-        $this->assertEquals(25, $this->vaisseau->getVitesse());
-    }
-
-    public function testVitesseNegativeException(){
-        $this->expectException(\InvalidArgumentException::class);
-        $this->vaisseau->setVitesse(-5);
-    }
-
-    public function testSetEquipageVaisseau(){
-        $this->vaisseau->setEquipage(50);
-        $this->assertEquals(50, $this->vaisseau->getEquipage());
-    }
-
-    public function testEquipageDepasseCapaciteException(){
-        $this->vaisseau->setCapacite(30);
-        $this->expectException(\LogicException::class);
-        $this->vaisseau->setEquipage(50);
-    }
-
-    public function testNomVide(){
-        $this->expectException(\InvalidArgumentException::class);
-        $this->vaisseau->setNom('');
-    }*/
 }

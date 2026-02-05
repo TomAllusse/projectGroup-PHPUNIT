@@ -9,7 +9,6 @@ class VaisseauxTransport extends Vaisseaux{
 
     public function __construct( $id, $nom, $carburant, $etat, $capaciteMax) {
         parent ::__construct($id, $nom, $carburant, $etat);
-    
         if ($capaciteMax < 0) {
             throw new \InvalidArgumentException("La capacité maximale doit être un nombre positif.");
         }
@@ -53,44 +52,26 @@ class VaisseauxTransport extends Vaisseaux{
             throw new \RuntimeException("Le vaisseau n'est pas opérationnel");
         }
 
-       if ($quantite<=0){
+        if ($quantite<=0){
+            throw new \InvalidArgumentException("La quantité à charger doit être un nombre positif.");
+        }
 
-        throw new \InvalidArgumentException("La quantité à charger doit être un nombre positif.");
-        
-       }
+        if ($this->chargeActuelle + $quantite > $this->capaciteMax){
+            throw new \RuntimeException ("La capacité de la soute est dépassée");
+        }
 
-       if ($this->chargeActuelle + $quantite > $this->CapaciteMax){
-         
-          throw new \RuntimeException ("La capacité de la soute est dépassée");
-
-       }
-
-
-       $this->consommerCarburant();
-       $this->chargeActuelle += $quantite;
-
+        $this->chargeActuelle += $quantite;
     }
 
     public function decharger($quantite){
 
         if ($quantite <=0 || $quantite  > $this->ChargeActuelle){
-
             throw new \RuntimeException ("Le déchargement est invalide");
         }
 
         $this->chargeActuelle -= $quantite;
-        
-
     }
 
-
-
-
-
-
-
-
-    
 }
 
 

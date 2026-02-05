@@ -5,15 +5,22 @@ class VaisseauxCombat extends Vaisseaux{
 
     private $munitions;
     
-    public function __construct($id, $nom, $carburant, $degatSubies, $etat, $munitions){
-
-        parent:: __construct($id, $nom, $carburant, $degatSubies, $etat);
+    public function __construct( $id, $nom, $carburant, $etat, $munitions) {
+        parent ::__construct($id, $nom, $carburant, $etat);
+        if ($munitions < 0) {
+            throw new \InvalidArgumentException("La quantité de munitions doit être un nombre positif.");
+        }
         $this->munitions = $munitions;
-
     }
 
     /* Methodes Setters */
-    public function
+
+    public function setMunitions($munitions)
+    {
+        $this->munitions = $munitions;
+
+        return $this;
+    }
 
     /* Methodes Getters */
 
@@ -23,25 +30,21 @@ class VaisseauxCombat extends Vaisseaux{
 
     /* Methodes */
 
-    public function tirer($balle){
+    public function tirer($munitions){
 
         if ($this->estOperationnel() === false) {
             throw new \RuntimeException("Le vaisseau n'est pas opérationnel");
         }
         
-        if($balle <= 0){
-            throw new \InvalidArgumentException("La quantité de balle doit être un nombre positif.");
+        if($munitions <= 0){
+            throw new \InvalidArgumentException("La quantité de munitions doit être un nombre positif.");
         }
 
-        if($balle > $this->munitions){
+        if($munitions > $this->munitions){
             throw new \InvalidArgumentException("Pas assez de munitions pour tirer.");
         }
-        $this->munitions -= $balle;
-        $this->interaction("tirer", $balle);
+        $this->munitions -= $munitions;
+        $this->interaction("tirer", $munitions);
     }
-
-
 }
-
-
 ?>
