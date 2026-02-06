@@ -6,7 +6,6 @@ use Exception;
 
 class Vaisseaux
 {
-    private $id; // Identifiant unique du vaisseau (à voir si on le met ou pas => voir si c'est le nom à la place)
     private $nom; // Nom du vaisseau
     private $carburant; // Niveau de carburant (0 à 100) => 100 valeur par défaut
     private $degatSubies;
@@ -14,23 +13,22 @@ class Vaisseaux
 
     /* Constructeur */
     
-    public function __construct($id, $nom, $carburant = 100, $etat = true)
+    public function __construct($nom, $carburant = 100)
     {
-        $this->id = $id;
+       
         $this->nom = $nom;
-        $this->carburant = $carburant;
+        if ($carburant < 0 || $carburant > 100) {
+            throw new \InvalidArgumentException("Le niveau de carburant doit être compris entre 0 et 100.");
+        }
         $this->degatSubies = 0;
-        $this->etat = $etat;
+        if ($carburant > 0) {
+            $this->etat = true;
+        } else {
+            $this->etat = false;
+        }
     }
 
     /* Methodes Setters */
-    
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     public function setNom($nom)
     {
@@ -62,11 +60,6 @@ class Vaisseaux
 
     /* Methodes Getters */
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
     public function getNom()
     {
         return $this->nom;
@@ -89,11 +82,39 @@ class Vaisseaux
     
     /* Methode */
 
+    public function conso($quantite)
+    {
+        if($quantite < 0){
+            return "La quantité d'énergie à consommer doit être positive.";
+        }
+        if($this->etat === FALSE){
+            return "Le vaisseau est non opérationnel et ne peut pas consommer d'énergie.";
+        }
+        if($quantite > $this->carburant){
+            return "Pas assez de carburant pour consommer {$quantite} unités.";
+        }
+        $this->carburant -= $quantite;
+        $this->simulateurAvaries();
+        return "Le vaisseau a consommé {$quantite} unités de carburant.";
+    }
+
+    public function reparation()
+    {
+        $this->degatSubies = 0;
+        if($this->etat === FALSE && $this->carburant > 0){
+            $this->etat = TRUE;
+        }
+        return "Le vaisseau est entrain de se faire réparer";
+    }
+
     public function simulateurAvaries()
     {
         if($this->carburant <= 0 || $this->degatSubies >= 100){
             $this->etat = FALSE;
             return "Le vaisseau {$this->nom} est devenu non opérationnel.";
+        } elseif($etat=false){
+            $this->etat = True;
+            return "Le vaisseau {$this->nom} est devenu opérationnel.";
         }
     }
 
@@ -102,35 +123,19 @@ class Vaisseaux
         if ($action === "charger")
         {
             return "Le vaisseau est entrain d'être charger";
-        } else if($action === "tirer" ){
+        } else if($action === "tirer" && $param !== null ){
             return "Le vaisseau Tire {$param} munitions";
         } else if($action === "reparer"){
-            $this->degatSubies = 0;
-            if($this->etat === FALSE && $this->carburant > 0){
-                $this->etat = TRUE;
-            }
-            return "Le vaisseau est entrain de se faire réparer";
+            return $this->reparation();
         } else if($action === "diagnostique"){
             return "Etat du vaisseau: " . ($this->etat ? "Opérationnel" : "Non opérationnel") . ", Carburant: ".$this->carburant.", Dégâts subis: ".$this->degatSubies;
-        } else if($action === "consommationEnergie" ){
-            if($param === null){
-                return "Veuillez spécifier la quantité d'énergie à consommer.";
-            }else if($param < 0){
-                return "La quantité d'énergie à consommer doit être positive.";
-            }
-            if($this->etat === FALSE){
-                return "Le vaisseau est non opérationnel et ne peut pas consommer d'énergie.";
-            }
-            if($param > $this->carburant){
-                return "Pas assez de carburant pour consommer {$param} unités.";
-            }
-            $this->carburant -= $param;
-            return "Le vaisseau a consommé {$param} unités de carburant.";
+        } else if($action === "consommationEnergie" && $param !== null ){
+            return $this->conso($param);
         } else if($action === "rempliEnergie" ){
             $this->carburant = 100;
             return "Le vaisseau est entrain d'être remplie d'énergie";
-        } else {
-            return "Action inconnue";
+        }else {
+            return "Action inconnue ou paramètre manquant.";
         }
     }
 }
