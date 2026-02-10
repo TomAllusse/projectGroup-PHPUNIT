@@ -4,7 +4,7 @@
 <br>
 <summary> Création du dossier .github </summary>
 <br>
-<summary> Création du dossier workflows </summary>
+<summary> Création du dossier workflows dans le dossier ".github"</summary>
 <br>
 
 # Création du fichier "ci.yml" dans le dossier workflows
